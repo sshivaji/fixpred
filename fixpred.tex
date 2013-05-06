@@ -1,5 +1,5 @@
 %\documentclass[10pt, conference, letterpaper, compsocconf]{IEEEtran}
-\documentclass[preprint,10pt]{sigplanconf}
+% \documentclass[preprint,10pt]{sigplanconf}
 %\documentclass{acm_proc_article-sp}
 
 
@@ -39,7 +39,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \@ifundefined{definecolor}{\usepackage{color}}{}
 
-% \documentclass[journal,10pt,draftclsnofoot,onecolumn]{IEEEtran}
+\documentclass[journal,10pt,draftclsnofoot,twocolumn]{IEEEtran}
 
 % \documentclass{acm_proc_article-sp}
 \usepackage{multirow}
@@ -171,7 +171,14 @@ Once fix suggestions are shown to be quite usable, the next logical question is 
 
 \textit{RQ2. What kind of features are ideal for generating Fix Suggestions?}
 
-The top hundred features input to the bug fix matrix by the classifier are investigated in further detail Section \ref{Top100BugReasons}. 
+The top hundred features input to the bug fix matrix by the classifier are investigated in further detail Section \ref{Top100BugReasons}.
+
+There is a need to investigate the practical value of Fix Suggestions. The next two research questions address the human utility of the Fix Suggester.
+
+\textit{RQ3. When engineers inspect the bug fix change log, do they find that the suggested keywords are relevant to the actual bug fix?}
+
+\textit{RQ4. Does reviewing the Fix Suggester's keywords influence the investigation for the bug fix?}
+
 
 The primary contributions of this paper is a novel method to predicting bug fix content using inputs from a Bug Fix matrix and a classifier. 
 
