@@ -1,4 +1,4 @@
-%\documentclass[10pt, conference, letterpaper, compsocconf]{IEEEtran}
+\documentclass[10pt, conference, letterpaper, compsocconf]{IEEEtran}
 % \documentclass[preprint,10pt]{sigplanconf}
 %\documentclass{acm_proc_article-sp}
 
@@ -10,6 +10,8 @@
 \usepackage{subscript}
 \usepackage{color}
 \usepackage[labelfont=bf]{caption}
+\usepackage{pgf-pie}
+
 
 
 \makeatletter
@@ -39,7 +41,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
 \@ifundefined{definecolor}{\usepackage{color}}{}
 
-\documentclass[journal,10pt,draftclsnofoot,twocolumn]{IEEEtran}
+% \documentclass[conference,10pt,draftclsnofoot,twocolumn]{IEEEtran}
 
 % \documentclass{acm_proc_article-sp}
 \usepackage{multirow}
@@ -59,27 +61,27 @@
 
 \title{Effective Bug Fix Suggestions}
 
-%\author{\IEEEauthorblockN{Shivkumar Shivaji \IEEEauthorrefmark{1},
-%Zhongpeng Lin \IEEEauthorrefmark{1}, E. James Whitehead, Jr. \IEEEauthorrefmark{1},
-%Ram Akella \IEEEauthorrefmark{1}, 
-%Sunghun Kim \IEEEauthorrefmark{2}}
-%\IEEEauthorblockA{ \IEEEauthorrefmark{1}School of Engineering\\
-%University of California Santa Cruz, \\
-%Santa Cruz, CA, USA\\
-%Email: \{shiv, ejw, ram\}@soe.ucsc.edu
-%}
-%\IEEEauthorblockA{ \IEEEauthorrefmark{2}Department of Computer Science\\
-%Hong Kong University of Science and Technology\\
-%Hong Kong\\
-%Email: hunkim@cse.ust.hk
-%}}
-
-\authorinfo{Shivkumar Shivaji \and Zhongpeng Lin \and E. James Whitehead Jr. \and Ram Akella }
-		 {University of California Santa Cruz}
-		 {{shiv, zlin, ejw, ram}@soe.ucsc.edu}
-\authorinfo{Sunghun Kim}
-		 {Hong Kong University of Science and Technology}
-		 {hunkim@cse.ust.hk}
+\author{\IEEEauthorblockN{Shivkumar Shivaji \IEEEauthorrefmark{1},
+Zhongpeng Lin \IEEEauthorrefmark{1}, E. James Whitehead, Jr. \IEEEauthorrefmark{1},
+Ram Akella \IEEEauthorrefmark{1}, 
+Sunghun Kim \IEEEauthorrefmark{2}}
+\IEEEauthorblockA{ \IEEEauthorrefmark{1}School of Engineering\\
+University of California Santa Cruz, \\
+Santa Cruz, CA, USA\\
+Email: \{shiv, ejw, ram\}@soe.ucsc.edu
+}
+\IEEEauthorblockA{ \IEEEauthorrefmark{2}Department of Computer Science\\
+Hong Kong University of Science and Technology\\
+Hong Kong\\
+Email: hunkim@cse.ust.hk
+}}
+% 
+% \authorinfo{Shivkumar Shivaji \and Zhongpeng Lin \and E. James Whitehead Jr. \and Ram Akella }
+% 		 {University of California Santa Cruz}
+% 		 {{shiv, zlin, ejw, ram}@soe.ucsc.edu}
+% \authorinfo{Sunghun Kim}
+% 		 {Hong Kong University of Science and Technology}
+% 		 {hunkim@cse.ust.hk}
 		
 \maketitle
 
@@ -90,8 +92,8 @@ There are times when bug fixes are truly one-of-a-kind code solutions to repairi
 A technique called Fix Suggester uses the Bug Fix matrix to predict those tokens most likely to appear in a bug fix for a given buggy software change. An analysis of the predictive performance of Fix Suggester is performed on four open source projects. Predicted bug fix tokens appear useful in providing developers with clues about how to make bug fix changes.
 
 \end{abstract}
-\category{D.2.5} {Testing and Debugging}{Debugging aids}
-\category{D.4.8} {Performance}{Modeling and prediction}
+% \category{D.2.5} {Testing and Debugging}{Debugging aids}
+% \category{D.4.8} {Performance}{Modeling and prediction}
 
 \keywords
 Modeling and prediction, Debugging aids
@@ -167,18 +169,12 @@ and a Bug Fix Matrix are used in combination to train and predict fix tokens tha
 bug fix content. Section \ref{FixContentPredictionResults} talks
 about the results obtained from the approach. Validation is performed by comparing against tokens present in actual bug fixes.
 
-Once fix suggestions are shown to be quite usable, the next logical question is what features are most important when predicting fix content. This leads to the next research question. 
+Once fix suggestions are shown to be quite usable, the next logical question is how effective are fix suggestions in practice.
+The next two research questions address the utility of the Fix Suggester to engineers.
 
-\textit{RQ2. What kind of features are ideal for generating Fix Suggestions?}
+\textit{RQ2. When engineers inspect the bug fix change log, do they find that the suggested keywords are relevant to the actual bug fix?}
 
-The top hundred features input to the bug fix matrix by the classifier are investigated in further detail Section \ref{Top100BugReasons}.
-
-There is a need to investigate the practical value of Fix Suggestions. The next two research questions address the human utility of the Fix Suggester.
-
-\textit{RQ3. When engineers inspect the bug fix change log, do they find that the suggested keywords are relevant to the actual bug fix?}
-
-\textit{RQ4. Does reviewing the Fix Suggester's keywords influence the investigation for the bug fix?}
-
+\textit{RQ3. Does reviewing the Fix Suggester's keywords influence the investigation for the bug fix?}
 
 The primary contributions of this paper is a novel method to predicting bug fix content using inputs from a Bug Fix matrix and a classifier. 
 
@@ -656,34 +652,73 @@ a recall of 38.9\% when averaging the evaluation points over all projects in the
 
 Overall, predicting bug fix content is a hard problem. Being able to correctly predict close to 47\% of the actual content of bug fixes while covering almost 39\% of all bug fix tokens is not a bad start. As precision can be improved at the cost of recall, and vice-versa, Figure \ref{Figure:FixSuggesterResults} displays F-measure results instead. If a developer desires more precision at the cost of recall, it is possible to go beyond 47\%. 
 
-\par A logical question that follows is what are the top bug reasons input to the Fix Matrix? A software developer might ask which code attributes are the most effective predictors of bugs. The next section deals with an analysis of the top 100 bug inducing features of each project.
+These results seem quite promising. In practice, however, having a precision and recall of less than 50\% each might confuse humans when working on a bug fix. In addition, the utility of the proposed keywords should be better understood. The final benefit of a user study focusing on industrial software engineers is evaluating the suitability of corporate adoption of the Fix Suggester. The next section introduces the user study procedure.
 
-\subsection{Breakdown of Top 100 Bug Inducing Features}
-\label{Top100BugReasons}
-The top 100 most bug inducing features after training on 50\% of project history are summarized in Table \ref{table:Top100}. The top 3 types are purely keyword related. Adding a certain keyword has the highest chance of creating a bug, followed by deletion, and introducing entirely new keywords to a file. New keyword features refers to the addition of keywords not seen before in a file. Meta-data and Changelog features are the next most prominent set of features. 
+\subsection{User Study Procedure}
+Fix Suggester results were shown to 19 users for both RQ2 and RQ3. To make analysis convenient, the respondents were asked to complete an online survey showing partial code diff data. SurveyMonkey was used for online delivery of surveys. The majority of participants were industrial software engineers. All participants had some knowledge of Java.
 
-Given that a small number of meta-data and changelog features are present in the projects to start with, a breakdown of the information conveyed by these features for each project is presented in Table \ref{table:Top100Meta}. The name of the author seems to be an important predictor in all projects except jEdit. For Argouml, 10pm is a bad time to commit code as is committing on a Wednesday. For Eclipse JDT, Thursday is not a good day for submitting code. The benefit of leveraging meta-data and changelog features is the potential to use this information across projects.
+In the case of RQ2, users were asked to indicate if the suggested keywords intersected with the actual bug fix using a Likert scale of 3 options. Participants were shown the Bug Fix change log, parts of the actual bug fix, and the Fix Suggester's keywords.
 
-\par It is somewhat surprising that AST features do not make the top 100 feature list. While AST features were useful for fix prediction, they did not feature in the top 100.
+\begin{description}
+	\item[Not Helpful] The predicted keywords did not intersect at all with the actual bug fix.
+	\item[Somewhat Helpful] The predicted keywords partially intersect with the actual bug fix.
+	\item[Helpful] The predicted keywords intersect with key portions of the bug fix.
+\end{description}
 
-\begin{table*}[t]
-\caption{Meta-data and Changelog Features in the Top 100}
-\label{table:Top100Meta}
-\begin{center}
-%\begin{tabular}{|l|l|l|l|l|l}
-\begin{tabular}{ll}
+A response of ``Not helpful" indicates that despite statistical intersections, the predicted keywords did not actually reflect in the presented extracts of the bug fix. Somewhat helpful connotes clear intersection but not with key portions of the bug fix. Helpful depicts that an intersection exists between the suggestions and key regions of the bug fix.
 
-\hline
-Project        & Features  \\ \hline
-{\sc Argouml}   & Author name, Changelog  Messages and length, \\ & Commit hour - 10pm, Commit day - Wednesday, \\ &Cumulative bug count 	\\ \hline
-{\sc Eclipse JDT}  & Author name, Commit day - Thursday, File path 	\\ \hline
-{\sc jEdit}  & Changelog messages 	\\ \hline
-{\sc Lucene}     & Author name, \# of files copied, Commit hour - 9pm, \\  & Changed LOC, Cumulative bug count, Changelog messages 	\\ \hline
+For RQ3, subjects were shown the bug fix change log comment. They were also shown parts of the actual buggy change. They were asked to form a set of candidate keywords for the bug fix. After viewing the suggested keywords, they were asked if their set of candidate keywords was altered after viewing the fix suggestions. This experiment replicates potential industrial usage of the Fix Suggester. During a typical business day, one can envisage that the content of the bug fix is not yet known, and the Fix Suggester's suggestions have to be evaluated on face value. 
 
-\end{tabular}
-\end{center}
-\label{table:topFeatures}
-\end{table*}
+The bug fix change log comments were shown to the users in order to guide their search for the fix. It is hard to isolate potential bug fixes on large set of code changes without any direction. In practice, a bug report, or a customer experience with a bug can be substitutes for the change log comment of the actual bug fix.
+
+The feedback options for RQ9 include
+
+\begin{description}
+	\item[Not Helpful] My candidate keyword list was unaffected
+	\item[Somewhat Helpful] My candidate keyword list changed somewhat due to the fix suggestions
+	\item[Helpful] My candidate keyword list was influenced by the fix suggestions
+\end{description}
+
+The option ``Not helpful" in this case means an unaltered candidate keyword list. Somewhat helpful indicates that the candidate keyword list had a moderate change. Helpful means the candidate code list was strongly influenced by the suggestions. Users provided feedback on randomly selected code changes on every project for which fix suggestions were computed.
+
+The next section details results of the qualitative study on the Fix Suggester.
+
+\subsection{Fix Suggester Qualitative Study}
+\label{FixSuggesterUserStudy}
+
+RQ2 states ``When engineers inspect the bug fix change log, do they find that the suggested keywords are relevant to the actual bug fix?'' 69.5\% of the surveyed engineers found the suggested keywords to be somewhat or quite helpful. 30.5\% of engineers on the other hand found the suggested keywords to not be helpful, they did not see any intersection with the actual bug fix.
+
+RQ3 states ``Does reviewing the Fix Suggester's keywords influence the investigation for the bug fix?'' 67.4\% of engineers found the suggested keywords to be somewhat or quite helpful. 32.6\% of engineers found the suggested keywords to be not helpful, stating that their candidate keyword list was unaffected by the suggestions.
+
+The distribution of utility of the suggestions for RQ2 and RQ3 is respectively shown in figures \ref{Suggester_RQ1_Results} and \ref{Suggester_RQ2_Results}. There was not much deviation from one project to another. It is promising that engineers on average found the Fix Suggester to be somewhat useful for both RQ2 and RQ3.
+
+The general feeling was that the Fix Suggester is quite useful for engineers new to a codebase. Typical co-occurrence patterns of a bug fix were exposed especially for user interface driven projects such as Jedit and Argouml. The patterns are not limited to simple co-occurrence. The Fix Suggester is perhaps a customized filtered version of a co-occurrence driven solution based on fixes applied to similar bugs. These patterns tend to help engineers new to a project. A practical example is the knowledge that getPreferredSize, actionPerformed, setLayout, propertiesChanged are keywords that should be included if bug fix involves changing a UI action in Jedit. Another is that a bug fix on the Lucene index will require changing documents, created, current (document), open (document), and (document) count.
+
+However, there are a few areas for improvement. Firstly, about 30\% of users finding the suggestions ineffective is a clear area to work on for both research questions. The more challenging issue is to sway users who found it to be `Somewhat Helpful'. The following suggestions were based on the verbal feedback provided by the users. 
+
+\begin{description}
+	\item[Large Code Changes] The Fix Suggester did not fare well on large code changes for both RQ2 and RQ3. For RQ2, it was especially hard for engineers to look for intersections when code spanned several files. On RQ3, a large keyword list tended to confuse engineers. It might be interesting to adaptively trim the set of recommended keywords on a particular code change. It might also be possible to trim the suggestion list based on how tolerant the user is. Those users finding it not helpful would have benefited from a smaller set of suggestions.
+	\item[Reducing Search Time] Having extraneous keywords can confuse engineers in practice. For RQ3, this means the search for a bug fix can be derailed by poor/less likely keyword choices. Engineers did not want to waste time on a suggested keyword if it was unlikely to be needed for this fix. A model that tried to minimize wasted time at the cost of missing out a few relevant keywords appealed to them. At first, this appears to be a simple precision/recall tradeoff. However, it is actually a more complex request for lower recall but saving potentially significant human time. Human time can be saved by not including plausible but ineffective keywords. A plausible but incorrect keywords might lure unsuspecting engineers to waste time while considering viabilities for these types of keywords.
+	\item[More Detail] To sway engineers from viewing the suggestions as somewhat helpful, they seemed to desire more detail on why those keywords need to change in a bug fix. One idea would be to integrate the keyword suggestions with static analysis techniques before presenting them. Static analysis tools like Findbugs often report several detailed violations. Engineers typically ignore the bulk of these violations. If the violations can be filtered by the Fix Suggester, they might be more likely to pay attention given that the Fix Suggester provides statistically relevant bug fix information. Statistics backed by the explanation power of static analysis can possibly be combined to make the suggestions effective.
+	\item[User Personalization] About 30\% of users found the suggestions to be not helpful. It might be useful to target suggestions at these users adaptively. If a user was unhappy with a suggestion due to too many keywords, less keywords can be offered the next time. Personalizing the Fix Suggester at the user level will likely increase practical satisfaction.
+	
+\end{description}
+
+\begin{figure}
+	\begin{tikzpicture}
+		\pie[scale font, text=pin]{30.5/Not Helpful, 59.0/Somewhat Helpful, 10.5/Helpful}		
+	\end{tikzpicture}
+	\caption{RQ8 Feedback}
+	\label{Suggester_RQ1_Results}
+\end{figure}
+
+\begin{figure}
+	\begin{tikzpicture}
+		\pie[text=pin, scale font]{32.6/Not Helpful, 52.6/Somewhat Helpful, 14.7/Helpful}		
+	\end{tikzpicture}
+	\caption{RQ9 Feedback}
+	\label{Suggester_RQ2_Results}
+\end{figure}
 
 \section{Related Work}
 \label{RelatedWork}
@@ -751,9 +786,18 @@ statement on the likely contents of a bug fix.
 \end{itemize}
 
 \subsubsection{Fix Content Prediction Without Static Analysis}
+Brun et al \cite{Brun2004p1} use machine learning to detect program properties
+which are known to result from errors in code. They rank and classify these properties from user written code. They then warn the user if many
+such properties are present.
+
 Nguyen et al. \cite{nguyen2010recurring} recommend bug fixes for a class or method if a fix was applied to a code peer. If a relevant bug fix was applied to a similar class, it is then recommended. Code peers are defined as objects which work in a similar manner when using a graph based representation of object usages.
 
 Kim et al.'s Bugmem provides fix suggestions using past revision history \cite{Kim2006} . Bug and fix pairs are extracted from history. If an impending code change is similar to a previous bug, the prior buggy change and bug fix are displayed, and the developer is warned. This is a useful tool especially for developers who are new to a code base. They can be alerted of mistakes from project history. 
+
+Weimer et al. use genetic learning to suggest a fix based on mutations of the ASTs of the source hunks \cite{Weimer:2009:AFP:1555001.1555051}. If there is a
+comprehensive set of unit tests, and a bug was introduced which broke a unit test, this technique can repair that unit test using genetic
+learning and mutating AST of the source hunks until all unit tests pass again. The limitation of this technique is the assumption that unit
+tests are comprehensive and the fact that the fix suggested may not be optimal or even a feasible one.
 
 Holmes and Murphy proposed an approach to extract structural components from example code and use them to assist coding when developers are working on similar code \cite{holmes2005using}.
 
@@ -791,6 +835,8 @@ It also cannot identify bug-introducing changes caused by a change made to a fil
 \par \textbf{Selected classifiers might not be optimal.} \\ We explored many
 other classifiers, and found that the SVM consistently returned the
 best results and has the most suitable infrastructure for the Fix Suggester. It is however possible that another classifier can do a better job.
+
+\par \textbf{Humans consulted for feedback may not be representative.} \\ While all of the selected participants were from the industry, it is quite possible that these individuals do not reflect typical industrial engineers.
 
 \section{Conclusion}
 \par This paper introduces a novel statistical Fix Suggester approach that can predict unordered tokens of a bug fix. While predicting contents of a fix is a tough problem, the proposed approach is able to predict fix content with 46.9\% precision and 38.9\% recall on average. Section \ref{FixContentPredictionResults} shows that results can be better than these average figures for many points in a project's history.
