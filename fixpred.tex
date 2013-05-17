@@ -8,6 +8,8 @@
 \usepackage{color}
 \usepackage[labelfont=bf]{caption}
 \usepackage{pgf-pie}
+\usepackage{enumitem}
+
 
 
 
@@ -617,28 +619,6 @@ Average &  46.93 &  38.85 &  41.86\\
 
 \end{table}
 
-\begin{table*}[t]
-\caption{Top 100 Bug Reasons}
-\label{table:Top100}
-\begin{center}
-%\begin{tabular}{|l|l|l|l|l|l}
-\begin{tabular}{lllll}
-
-\hline
-Project        & Added    & Deleted  & New Source & Meta-data and\\
-Name           & Keywords & Keywords & Keywords & Changelog Features  \\ \hline
-{\sc Argouml}   & 72 	& 0 	  & 1 	  & 27 \\ \hline
-{\sc Eclipse JDT}  & 25 	& 54 	  & 18 	  & 3 \\ \hline
-{\sc jEdit}  & 94 	& 0 	  & 1 	  & 5 	 \\ \hline
-{\sc Lucene}     & 71 	& 0  	  & 1 	  & 28  \\ \hline
-
-Average        & 65.5  & 13.5   & 5.25  & 15.75   \\ \hline
-\end{tabular}
-\end{center}
-\label{table:topFeatures}
-\end{table*}
-
-
 The Fix Suggester was evaluated by training on p\% of project history and testing on (100-p)\% of project histories for p ranging from about 5 precent to 100 percent in 1 percent increments. As the vocabulary was generated using the first 500 revisions, no fix suggestions are presented when there are less than 500 revisions.  In order to grade the efficiency of the Fix Suggester independent of the classifier,
 actual bug fixes from test data were compared to the Fix Suggester's fix tokens. In other words, performance of the Fix Suggester was graded on actual future bug fixes by passing in the buggy change and all history prior to the buggy change. Prior history was cleansed to ensure that no information from the future was visible. For example, if a historical code change was labeled buggy due to a future fix, it is modified to reflect a neutral change in order to ensure that predictions do not unfairly use data from the future.
 
@@ -667,7 +647,7 @@ For RQ3, subjects were shown the bug fix change log comment. They were also show
 
 The bug fix change log comments were shown to the users in order to guide their search for the fix. It is hard to isolate potential bug fixes on large set of code changes without any direction. In practice, a bug report, or a customer experience with a bug can be substitutes for the change log comment of the actual bug fix.
 
-The feedback options for RQ9 include
+The feedback options for RQ3 include
 
 \begin{description}
 	\item[Not Helpful] My candidate keyword list was unaffected
@@ -679,7 +659,7 @@ The option ``Not helpful" in this case means an unaltered candidate keyword list
 
 The next section details results of the qualitative study on the Fix Suggester.
 
-\subsection{Fix Suggester Qualitative Study}
+\subsection{Fix Suggester Qualitative Study Results}
 \label{FixSuggesterUserStudy}
 
 RQ2 states ``When engineers inspect the bug fix change log, do they find that the suggested keywords are relevant to the actual bug fix?'' 69.5\% of the surveyed engineers found the suggested keywords to be somewhat or quite helpful. 30.5\% of engineers on the other hand found the suggested keywords to not be helpful, they did not see any intersection with the actual bug fix.
@@ -692,27 +672,31 @@ The general feeling was that the Fix Suggester is quite useful for engineers new
 
 However, there are a few areas for improvement. Firstly, about 30\% of users finding the suggestions ineffective is a clear area to work on for both research questions. The more challenging issue is to sway users who found it to be `Somewhat Helpful'. The following suggestions were based on the verbal feedback provided by the users. 
 
-\begin{description}
-	\item[Large Code Changes] The Fix Suggester did not fare well on large code changes for both RQ2 and RQ3. For RQ2, it was especially hard for engineers to look for intersections when code spanned several files. On RQ3, a large keyword list tended to confuse engineers. It might be interesting to adaptively trim the set of recommended keywords on a particular code change. It might also be possible to trim the suggestion list based on how tolerant the user is. Those users finding it not helpful would have benefited from a smaller set of suggestions.
-	\item[Reducing Search Time] Having extraneous keywords can confuse engineers in practice. For RQ3, this means the search for a bug fix can be derailed by poor/less likely keyword choices. Engineers did not want to waste time on a suggested keyword if it was unlikely to be needed for this fix. A model that tried to minimize wasted time at the cost of missing out a few relevant keywords appealed to them. At first, this appears to be a simple precision/recall tradeoff. However, it is actually a more complex request for lower recall but saving potentially significant human time. Human time can be saved by not including plausible but ineffective keywords. A plausible but incorrect keywords might lure unsuspecting engineers to waste time while considering viabilities for these types of keywords.
-	\item[More Detail] To sway engineers from viewing the suggestions as somewhat helpful, they seemed to desire more detail on why those keywords need to change in a bug fix. One idea would be to integrate the keyword suggestions with static analysis techniques before presenting them. Static analysis tools like Findbugs often report several detailed violations. Engineers typically ignore the bulk of these violations. If the violations can be filtered by the Fix Suggester, they might be more likely to pay attention given that the Fix Suggester provides statistically relevant bug fix information. Statistics backed by the explanation power of static analysis can possibly be combined to make the suggestions effective.
-	\item[User Personalization] About 30\% of users found the suggestions to be not helpful. It might be useful to target suggestions at these users adaptively. If a user was unhappy with a suggestion due to too many keywords, less keywords can be offered the next time. Personalizing the Fix Suggester at the user level will likely increase practical satisfaction.
+\begin{description}[leftmargin=\parindent,topsep=0pt,partopsep=3pt,parsep=0pt,itemsep=3pt]
+	\item[Large Code Changes]
+	The Fix Suggester did not fare well on large code changes for both RQ2 and RQ3. For RQ2, it was especially hard for engineers to look for intersections when code spanned several files. On RQ3, a large keyword list tended to confuse engineers. It might be interesting to adaptively trim the set of recommended keywords on a particular code change. It might also be possible to trim the suggestion list based on how tolerant the user is. Those users finding it not helpful would have benefited from a smaller set of suggestions.
+	\item[Reducing Search Time]
+	Having extraneous keywords can confuse engineers in practice. For RQ3, this means the search for a bug fix can be derailed by poor/less likely keyword choices. Engineers did not want to waste time on a suggested keyword if it was unlikely to be needed for this fix. A model that tried to minimize wasted time at the cost of missing out a few relevant keywords appealed to them. At first, this appears to be a simple precision/recall tradeoff. However, it is actually a more complex request for lower recall but saving potentially significant human time. Human time can be saved by not including plausible but ineffective keywords. A plausible but incorrect keywords might lure unsuspecting engineers to waste time while considering viabilities for these types of keywords.
+	\item[More Detail]
+	To sway engineers from viewing the suggestions as somewhat helpful, they seemed to desire more detail on why those keywords need to change in a bug fix. One idea would be to integrate the keyword suggestions with static analysis techniques before presenting them. Static analysis tools like Findbugs often report several detailed violations. Engineers typically ignore the bulk of these violations. If the violations can be filtered by the Fix Suggester, they might be more likely to pay attention given that the Fix Suggester provides statistically relevant bug fix information. Statistics backed by the explanation power of static analysis can possibly be combined to make the suggestions effective.
+	\item[User Personalization] 
+	About 30\% of users found the suggestions to be not helpful. It might be useful to target suggestions at these users adaptively. If a user was unhappy with a suggestion due to too many keywords, less keywords can be offered the next time. Personalizing the Fix Suggester at the user level will likely increase practical satisfaction.
 	
 \end{description}
 
 \begin{figure}
 	\begin{tikzpicture}
-		\pie[scale font, text=pin]{30.5/Not Helpful, 59.0/Somewhat Helpful, 10.5/Helpful}		
+		\pie[text=pin]{30.5/Not Helpful, 59.0/Somewhat Helpful, 10.5/Helpful}		
 	\end{tikzpicture}
-	\caption{RQ8 Feedback}
+	\caption{RQ2 Feedback}
 	\label{Suggester_RQ1_Results}
 \end{figure}
 
 \begin{figure}
 	\begin{tikzpicture}
-		\pie[text=pin, scale font]{32.6/Not Helpful, 52.6/Somewhat Helpful, 14.7/Helpful}		
+		\pie[text=pin]{32.6/Not Helpful, 52.6/Somewhat Helpful, 14.7/Helpful}		
 	\end{tikzpicture}
-	\caption{RQ9 Feedback}
+	\caption{RQ3 Feedback}
 	\label{Suggester_RQ2_Results}
 \end{figure}
 
