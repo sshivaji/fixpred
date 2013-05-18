@@ -85,7 +85,7 @@ Email: hunkim@cse.ust.hk
 
 There are times when bug fixes are truly one-of-a-kind code solutions to repairing the functionality of a software project. However, it is frequently the case that bug fixes exhibit regularity in the method calls, variables, and programming language keywords used. This paper first presents a technique for learning the conditional probability of a programming language token appearing in a bug fix change given the appearance of a token in a software change predicted to be buggy. The collection of these conditional probabilities is computed by the Bug Fix matrix.
 
-A technique called Fix Suggester uses the Bug Fix matrix to predict those tokens most likely to appear in a bug fix for a given buggy software change. An analysis of the predictive performance of Fix Suggester is performed on four open source projects. Predicted bug fix tokens appear useful in providing developers with clues about how to make bug fix changes.
+A technique called Fix Suggester uses the Bug Fix Matrix to predict those tokens most likely to appear in a bug fix for a given buggy software change. An analysis of the predictive performance of Fix Suggester is performed on four open source projects. Predicted bug fix tokens appear useful in providing developers with clues on how to make bug fix changes.
 
 \end{abstract}
 % \category{D.2.5} {Testing and Debugging}{Debugging aids}
@@ -121,7 +121,7 @@ Bug-introducing Revision 754        & Fix Revision 965                  \\ \hlin
 \label{table:argouml_code_example}
 \end{table*}
 
-Recent years have witnessed an increase of research interest in bug prediction techniques. A promising type of bug prediction algorithm uses machine learning techniques to predict whether a specific project change, as committed to a configuration management system, is a buggy change. Examples of such techniques can be found in \cite{Kim2007p58, shivaji2009reducing, aversano2007lbi, Hata2008} with the best such techniques achieving high precision (changes predicted as buggy are very likely to be buggy), and reasonable recall (while not all buggy changes can be detected, a usefully large fraction are).
+Recent years have witnessed an increase of research interest in bug prediction techniques. A promising type of bug prediction algorithm uses machine learning techniques to predict whether a specific project change, as committed to a configuration management system, is a buggy change. Examples of such techniques can be found in \cite{Kim2007p58, DBLP:journals/tse/ShivajiWAK13, aversano2007lbi, Hata2008} with the best such techniques achieving high precision (changes predicted as buggy are very likely to be buggy), and reasonable recall (while not all buggy changes can be detected, a usefully large fraction are).
 
 A notable challenge with such bug prediction algorithms is the nature of their output. They provide just a simple ``buggy/clean'' prediction for each change made to a project. That is, they take a change that a developer has just committed, presumably with some confidence in its correctness, and then simply state that the change is buggy, with no further feedback. We suspect that such bug prediction output might be more acceptable to developers should they additionally receive useful suggestions on how to go about fixing the predicted bug.
 
@@ -177,7 +177,7 @@ The next two research questions address the utility of the Fix Suggester to engi
 The primary contributions of this paper is a novel method to predicting bug fix content using inputs from a Bug Fix matrix and a classifier. 
 
 In the remainder of the paper, we start by introducing the corpus of projects, performance metrics and research questions. Next, the approaches proposed in the paper are covered in section \ref{Approaches}. This section starts by describing the overall workflow, moves
-on to the bug prediction approach, followed by the fix suggestion approach.
+on to the bug prediction approach, followed by the fix suggestion approach and a user study on the utility of the Fix Suggester.
 
 The stage is now set to discuss results. The paper starts by detailing answers to the research questions
 described above.
@@ -297,7 +297,7 @@ An extreme example is when the Fix Suggester predicts no tokens for a code chang
 
 In this paper, the precision, recall, F-measure metrics refer to the class of code tokens which are predicted to be part of a fix. For bug prediction, these metrics refer to changes which are predicted to be buggy. One can also use precision and recall to refer to changes which are predicted to be clean or to predict tokens which are not part of a future fix. For the sake of simplicity, this paper refers to precision and recall in the straightforward context of predicting a change to be buggy and predicting fix tokens of a future bug fix.
 
-The next section describes the change classification and the Fix Suggester in detail. 
+The next section describes change classification and the Fix Suggester in detail. 
 
 \section{Approaches}
 \label{Approaches} 
@@ -312,12 +312,12 @@ The next section describes the change classification and the Fix Suggester in de
 
 
 
-In this section, we distill the approaches used in the paper, starting with the code change classifier followed by the Fix Suggester. An overview of the developer interaction workflow is depicted in Figure~\ref{workflow}.
+In this section, we distill the approaches used in the paper, starting with the code change classifier followed by the Fix Suggester, and concluding with a user study. An overview of the developer interaction workflow is depicted in Figure~\ref{workflow}.
 The steps of the process are:
 \begin{enumerate}
 \item A code change is submitted.
 \item A prediction is made on whether the entire change is buggy or clean using change
-classification~\cite{Kim2007p58, shivaji2009reducing}. Change classification is explained in Section~\ref{ChangeClassification}.
+classification~\cite{Kim2007p58, DBLP:journals/tse/ShivajiWAK13}. Change classification is explained in Section~\ref{ChangeClassification}.
 \item If the code change is predicted to be buggy, suggest a partial code fix.
 The predicted fix tokens are presented to the user. The Fix content prediction algorithm is described in
 Section~\ref{FixPred}.
@@ -340,7 +340,7 @@ The next subsections describe these steps in detail.
 Change classification is an algorithm used to label and predict code changes as buggy or clean. 
 The key steps of the algorithm are briefly described in this section.
 For a detailed
-description of the algorithm, refer to~\cite{Kim2007p58, shivaji2009reducing}.
+description of the algorithm, refer to~\cite{Kim2007p58, DBLP:journals/tse/ShivajiWAK13}.
 
 The change classification process is distilled in Figure \ref{bugpredWorkflow}. The primary steps involved in performing change classification 
 %on a single project 
@@ -542,7 +542,7 @@ Each row of the matrix indicates the number of times a token shows up on the bug
 
 \end{figure}
 
-The Bug Fix Matrix can be used to predict fix content for an incoming buggy change. The Fix  Suggester's algorithm is illustrated in Figure \ref{Fig:FixSuggester} and detailed in Algorithm \ref{FixSuggesterAlgorithm}.
+The Bug Fix Matrix can be used to predict fix content for an incoming buggy change. The Fix Suggester's algorithm is illustrated in Figure \ref{Fig:FixSuggester} and detailed in Algorithm \ref{FixSuggesterAlgorithm}.
 \begin{algorithm}
 \caption{Fix Content Prediction Algorithm}
 
@@ -559,15 +559,15 @@ The Bug Fix Matrix can be used to predict fix content for an incoming buggy chan
 \label{FixSuggesterAlgorithm}
 \end{algorithm}
 
-In step 2, the fix matrix entries are adjusted using information from the code change classifier.
+In step 2, the Fix Matrix entries are adjusted using information from the code change classifier.
 The SVM algorithm assigns a weight to each feature, with a higher weight indicating that this feature is more useful in separating buggy changes from clean changes.
-We assume that these same features are also more useful for predicting which keywords will appear in bug fixes as well, and hence we wish to emphasize these keywords in the fix matrix.
+We assume that these same features are also more useful for predicting which keywords will appear in bug fixes as well, and hence we wish to emphasize these keywords in the Fix Matrix.
 To accomplish this, we multiply each matrix entry associated with a token by its SVM weight (as found in the SVM primal weight vector w in the Liblinear implementation [12]).
 
 For each buggy token entry on the left side of the matrix, all tokens in the columns followed by their weight are returned to imp\_set. Once the conditional probability of being a fix token is computed for all tokens in the vocabulary, a good cutoff is needed for the final step of extracting high probability fix tokens from imp\_set. 
 The top 10 percent of tokens with the highest conditional probabilities were returned. Fix Suggester's results are summarized in section \ref{FixContentPredictionResults}.
 
-An important practical issue with the Fix Matrix is the huge size it can encompass. Even using data from the first 500 revisions, the fix matrix vocabulary can still consist of about 50 thousand features. Having a 50 thousand by 50 thousand matrix can contain 2.5 billion
+An important practical issue with the Fix Matrix is the huge size it can encompass. Even using data from the first 500 revisions, the Fix Matrix vocabulary can still consist of about 50 thousand features. Having a 50 thousand by 50 thousand matrix can contain 2.5 billion
 entries. In order to make the algorithm perform well for this paper, only the top 10\% of tokens returns by the classifier were entered into the Fix Matrix. This is a radical compromise to simplify the problem. In order to increase recall at the cost of precision, it might
 be useful to include more features and investigate scalable solutions for large matrices.
 
@@ -581,7 +581,39 @@ The code change classifier performed well on all corpus projects, when training 
 A separate classifier was used for each project.
 It is possible to use an entirely different bug prediction algorithm to predict if a code change is buggy before applying fix prediction.
 
-The next section details results from the Fix Suggester.
+The next section details a user study conducted on the Fix Suggester.
+
+\subsection{User Study}
+
+While the Fix Suggester's results seem quite promising, the displayed keywords might confuse humans when working on a bug fix. The utility of the proposed keywords can be better understood with a user study. An additional benefit of a study focusing on industrial software engineers is evaluating the suitability of corporate adoption of the Fix Suggester.
+
+Fix Suggester results were shown to 19 users for both RQ2 and RQ3. To make analysis convenient, the respondents were asked to complete an online survey showing partial code diff data. SurveyMonkey was used for online delivery of surveys. The majority of participants were industrial software engineers. Software development experiences ranged from a few years to more than 10 years. All participants had some knowledge of Java.
+
+In the case of RQ2, users were asked to indicate if the suggested keywords intersected with the actual bug fix using a Likert scale of 3 options. Participants were shown the Bug Fix change log, parts of the actual bug fix, and the Fix Suggester's keywords.
+
+\begin{description}
+	\item[Not Helpful] The predicted keywords did not intersect at all with the actual bug fix.
+	\item[Somewhat Helpful] The predicted keywords partially intersect with the actual bug fix.
+	\item[Helpful] The predicted keywords intersect with key portions of the bug fix.
+\end{description}
+
+A response of ``Not Helpful" indicates that despite statistical intersections, the predicted keywords did not actually reflect in the presented extracts of the bug fix. Somewhat helpful connotes clear intersection but not with key portions of the bug fix. Helpful depicts that an intersection exists between the suggestions and key regions of the bug fix.
+
+For RQ3, subjects were shown the bug fix change log comment. They were also shown parts of the actual buggy change. They were asked to form a set of candidate keywords for the bug fix. After viewing the suggested keywords, they were asked if their set of candidate keywords was altered after viewing the fix suggestions. This experiment replicates potential industrial usage of the Fix Suggester. During a typical business day, one can envisage that the content of the bug fix is not yet known, and the Fix Suggester's suggestions have to be evaluated on face value. 
+
+The bug fix change log comments were shown to the users in order to guide their search for the fix. It is hard to isolate potential bug fixes on large set of code changes without any direction. In practice, a bug report, or a customer experience with a bug can be substitutes for the change log comment of the actual bug fix.
+
+The feedback options for RQ3 include
+
+\begin{description}
+	\item[Not Helpful] My candidate keyword list was unaffected
+	\item[Somewhat Helpful] My candidate keyword list changed somewhat due to the fix suggestions
+	\item[Helpful] My candidate keyword list was influenced by the fix suggestions
+\end{description}
+
+The option ``Not helpful" in this case means an unaltered candidate keyword list. Somewhat helpful indicates that the candidate keyword list had a moderate change. Helpful means the candidate code list was strongly influenced by the suggestions. Users provided feedback on randomly selected code changes on every project for which fix suggestions were computed.
+
+The next section presents the Fix Suggester's results.
 
 \section{Results}
 \label{Results}
@@ -628,38 +660,9 @@ a recall of 38.9\% when averaging the evaluation points over all projects in the
 
 Overall, predicting bug fix content is a hard problem. Being able to correctly predict close to 47\% of the actual content of bug fixes while covering almost 39\% of all bug fix tokens is not a bad start. As precision can be improved at the cost of recall, and vice-versa, Figure \ref{Figure:FixSuggesterResults} displays F-measure results instead. If a developer desires more precision at the cost of recall, it is possible to go beyond 47\%. 
 
-These results seem quite promising. In practice, however, having a precision and recall of less than 50\% each might confuse humans when working on a bug fix. In addition, the utility of the proposed keywords should be better understood. The final benefit of a user study focusing on industrial software engineers is evaluating the suitability of corporate adoption of the Fix Suggester. The next section introduces the user study procedure.
+The next section details results of a qualitative study on the Fix Suggester.
 
-\subsection{User Study Procedure}
-Fix Suggester results were shown to 19 users for both RQ2 and RQ3. To make analysis convenient, the respondents were asked to complete an online survey showing partial code diff data. SurveyMonkey was used for online delivery of surveys. The majority of participants were industrial software engineers. All participants had some knowledge of Java.
-
-In the case of RQ2, users were asked to indicate if the suggested keywords intersected with the actual bug fix using a Likert scale of 3 options. Participants were shown the Bug Fix change log, parts of the actual bug fix, and the Fix Suggester's keywords.
-
-\begin{description}
-	\item[Not Helpful] The predicted keywords did not intersect at all with the actual bug fix.
-	\item[Somewhat Helpful] The predicted keywords partially intersect with the actual bug fix.
-	\item[Helpful] The predicted keywords intersect with key portions of the bug fix.
-\end{description}
-
-A response of ``Not helpful" indicates that despite statistical intersections, the predicted keywords did not actually reflect in the presented extracts of the bug fix. Somewhat helpful connotes clear intersection but not with key portions of the bug fix. Helpful depicts that an intersection exists between the suggestions and key regions of the bug fix.
-
-For RQ3, subjects were shown the bug fix change log comment. They were also shown parts of the actual buggy change. They were asked to form a set of candidate keywords for the bug fix. After viewing the suggested keywords, they were asked if their set of candidate keywords was altered after viewing the fix suggestions. This experiment replicates potential industrial usage of the Fix Suggester. During a typical business day, one can envisage that the content of the bug fix is not yet known, and the Fix Suggester's suggestions have to be evaluated on face value. 
-
-The bug fix change log comments were shown to the users in order to guide their search for the fix. It is hard to isolate potential bug fixes on large set of code changes without any direction. In practice, a bug report, or a customer experience with a bug can be substitutes for the change log comment of the actual bug fix.
-
-The feedback options for RQ3 include
-
-\begin{description}
-	\item[Not Helpful] My candidate keyword list was unaffected
-	\item[Somewhat Helpful] My candidate keyword list changed somewhat due to the fix suggestions
-	\item[Helpful] My candidate keyword list was influenced by the fix suggestions
-\end{description}
-
-The option ``Not helpful" in this case means an unaltered candidate keyword list. Somewhat helpful indicates that the candidate keyword list had a moderate change. Helpful means the candidate code list was strongly influenced by the suggestions. Users provided feedback on randomly selected code changes on every project for which fix suggestions were computed.
-
-The next section details results of the qualitative study on the Fix Suggester.
-
-\subsection{Fix Suggester Qualitative Study Results}
+\subsection{User Study Results}
 \label{FixSuggesterUserStudy}
 
 RQ2 states ``When engineers inspect the bug fix change log, do they find that the suggested keywords are relevant to the actual bug fix?'' 69.5\% of the surveyed engineers found the suggested keywords to be somewhat or quite helpful. 30.5\% of engineers on the other hand found the suggested keywords to not be helpful, they did not see any intersection with the actual bug fix.
@@ -707,7 +710,7 @@ However, there are a few areas for improvement. Firstly, about 30\% of users fin
 
 
 \subsection{Bug Prediction on a Given Software Unit} 
-\par Several approaches attempt defect prediction on a given software unit. It is ideal for the software unit to be as small as possible. Prediction on a code change allows an individual change to be targeted for fix content prediction. Aversano et al. \cite{aversano2007lbi} use KNN (K nearest neighbors) to locate faulty modules.  Hata et al. \cite{Hata2008} showed that a technique used for spam filtering of emails can be successfully used on software modules to classify software as buggy or clean. Kim et al. \cite{Kim2007p58} and Shivaji et al. \cite{shivaji2009reducing} perform bug prediction on a code change. The latter technique was used by this paper. D'Ambros et al. \cite{d2011evaluating} perform an extensive comparison of various bug prediction algorithms that operate at the file level.
+\par Several approaches attempt defect prediction on a given software unit. It is ideal for the software unit to be as small as possible. Prediction on a code change allows an individual change to be targeted for fix content prediction. Aversano et al. \cite{aversano2007lbi} use KNN (K nearest neighbors) to locate faulty modules.  Hata et al. \cite{Hata2008} showed that a technique used for spam filtering of emails can be successfully used on software modules to classify software as buggy or clean. Kim et al. \cite{Kim2007p58} and Shivaji et al. \cite{DBLP:journals/tse/ShivajiWAK13} perform bug prediction on a code change. The technique of the latter work is used by this paper. D'Ambros et al. \cite{d2011evaluating} perform an extensive comparison of various bug prediction algorithms that operate at the file level.
 
 \par While its preferable for the software unit to be as small as possible in order to optimize the future steps in the process, any of the above methods can be used in place of a code change level bug predictor.
 
@@ -819,7 +822,7 @@ best results and has the most suitable infrastructure for the Fix Suggester. It 
 \par \textbf{Humans consulted for feedback may not be representative.} \\ While all of the selected participants were from the industry, it is quite possible that these individuals do not reflect typical industrial engineers.
 
 \section{Conclusion}
-\par This paper introduces a novel statistical Fix Suggester approach that can predict unordered tokens of a bug fix. While predicting contents of a fix is a tough problem, the proposed approach is able to predict fix content with 46.9\% precision and 38.9\% recall on average. Section \ref{FixContentPredictionResults} shows that results can be better than these average figures for many points in a project's history.
+\par This paper introduces a novel statistical Fix Suggester approach that can predict unordered tokens of a bug fix. While predicting contents of a fix is a tough problem, the proposed approach is able to predict fix content with 46.9\% precision and 38.9\% recall on average. Section \ref{FixContentPredictionResults} shows that results can be better than these average figures for many points in a project's history. Section \ref{FixSuggesterUserStudy} indicates that the Fix Suggester's output is on average quite useful to engineers.
 
 \par In the future, when software developers have advanced bug prediction technology
 integrated into their software development environment, the use of a Bug Fix matrix with a code change classifier will permit improved bug fix content prediction. With
